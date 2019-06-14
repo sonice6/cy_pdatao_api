@@ -1,0 +1,22 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.ShopMapper">
+    
+    <select id="getShopById" resultType="com.pdatao.api.entity.Shop">
+       select id ,
+              shop_user as shopUser,
+              shop_user_id as shopUserId,
+              shop_name as shopName,
+              create_user as createUser,
+              create_date as createDate,
+              update_date as updateDate,
+              currency_shop as currencyShop,
+              tb_account as tbAccount
+        from tb_shop
+        where id = #{shopId}
+    </select>
+
+</mapper>

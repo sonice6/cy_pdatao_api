@@ -1,0 +1,231 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.GoodsMapper">
+    
+    <select id="getGoodsList" resultType="com.pdatao.api.entity.Goods">
+        select id,
+		      goods_name as goodsName,
+		       goods_title as goodsTitle,
+		       goods_type as goodsType,
+		       goods_image as goodsImage,
+		       gift_type as giftType,
+		       gift as gift,
+		       trial_type as trialType, 
+		       shop as shop,
+		       goods_price as goodsPrice,
+		       goods_num as goodsNum,
+		       demand_num as demandNum,
+		       release_type as releaseType,
+		       start_time as startTime,
+		       end_time as endTime,
+		       end_type as endType,
+		       taobao_link as taobaoLink,
+		       taobao_details as taobaoDetails,
+		       create_user as createUser,
+		       create_date as createDate,
+		       update_date as updateDate,
+		       status as status,
+		       sku as sku,
+		       shop_name as shopName,
+		       keywords as keywords,
+		       keyword as keyword,
+		       TB_goods_id as TBgoodsId,
+		       tb_goods.goods_demend as goodsDemend,
+		       is_condi as isCondi,
+		       condi_area as condiArea,
+		       condi_price as condiPrice
+		 from tb_goods
+		 where status not in(1,2)
+		 order by create_date
+		 limit #{pageSize},#{count}
+    </select>
+    
+    
+    <select id="getListByIds" resultType="com.pdatao.api.entity.Goods">
+        select id,
+		       goods_name as goodsName,
+		       goods_title as goodsTitle,
+		       goods_type as goodsType,
+		       goods_image as goodsImage,
+		       gift_type as giftType,
+		       gift as gift,
+		       trial_type as trialType, 
+		       shop as shop,
+		       goods_price as goodsPrice,
+		       goods_num as goodsNum,
+		       demand_num as demandNum,
+		       release_type as releaseType,
+		       start_time as startTime,
+		       end_time as endTime,
+		       end_type as endType,
+		       taobao_link as taobaoLink,
+		       taobao_details as taobaoDetails,
+		       create_user as createUser,
+		       create_date as createDate,
+		       update_date as updateDate,
+		       status as status,
+		       sku as sku,
+		       shop_name as shopName,
+		       keywords as keywords,
+		       keyword as keyword,
+		       TB_goods_id as TBgoodsId,
+		       tb_goods.goods_demend as goodsDemend
+		 from tb_goods
+		 where status not in(1,2)
+		 and
+		 <if test="ids!=null">
+		 id in
+			<foreach item="item" collection="ids" open="(" separator="," close=")">
+				${item}
+			</foreach>
+		</if>
+    </select>
+    
+    <select id="getListLikeId" resultType="com.pdatao.api.entity.Goods">
+    select id,
+		       goods_name as goodsName,
+		       goods_title as goodsTitle,
+		       goods_type as goodsType,
+		       goods_image as goodsImage,
+		       gift_type as giftType,
+		       gift as gift,
+		       trial_type as trialType, 
+		       shop as shop,
+		       goods_price as goodsPrice,
+		       goods_num as goodsNum,
+		       demand_num as demandNum,
+		       release_type as releaseType,
+		       start_time as startTime,
+		       end_time as endTime,
+		       end_type as endType,
+		       taobao_link as taobaoLink,
+		       taobao_details as taobaoDetails,
+		       create_user as createUser,
+		       create_date as createDate,
+		       update_date as updateDate,
+		       status as status,
+		       sku as sku,
+		       shop_name as shopName,
+		       keywords as keywords,
+		       keyword as keyword,
+		       TB_goods_id as TBgoodsId,
+		       tb_goods.goods_demend as goodsDemend,
+		       supplement
+		 from tb_goods
+		 where status not in(1,2)
+		 and goods_num>0
+		 and
+		 gift like '%${id}%'
+		 <if test="shopId!=null">
+		 and shop not in 
+		 <foreach collection="shopId" index="index" item="id" open="(" separator="," close=")">
+          #{id}
+    	</foreach>
+		 </if>
+    </select>
+
+
+	<select id="getGoodsBYId" resultType="com.pdatao.api.entity.Goods">
+        select id,
+		     goods_name as goodsName,
+		       goods_title as goodsTitle,
+		       goods_type as goodsType,
+		       goods_image as goodsImage,
+		       gift_type as giftType,
+		       gift as gift,
+		       trial_type as trialType, 
+		       shop as shop,
+		       goods_price as goodsPrice,
+		       goods_num as goodsNum,
+		       demand_num as demandNum,
+		       release_type as releaseType,
+		       start_time as startTime,
+		       end_time as endTime,
+		       end_type as endType,
+		       taobao_link as taobaoLink,
+		       taobao_details as taobaoDetails,
+		       create_user as createUser,
+		       create_date as createDate,
+		       update_date as updateDate,
+		       status as status,
+		       sku as sku,
+		       shop_name as shopName,
+		       keywords as keywords,
+		       keyword as keyword,
+		       TB_goods_id as TBgoodsId,
+		       tb_goods.goods_demend as goodsDemend,
+		       is_condi as isCondi,
+		       condi_area as condiArea,
+		       condi_price as condiPrice
+		 from tb_goods
+		 where status not in(1,2)
+		 and id =#{id}
+
+    </select>
+    
+    
+    <select id="getGoodsCount" resultType="java.lang.Integer">
+        select count(*) num from tb_order where gift_id = #{giftId};
+    </select>
+    
+    
+    <select id="getKeywords" resultType="java.lang.Integer">
+        select ifnull(count(1),0) as num from tb_order 
+        where goods_id=#{giftId} and `status`!=5
+		and keywords=#{name}
+    </select>
+    
+    
+    <update id="updateDjGoods">
+    update tb_goods set  goods_num = goods_num -1
+    where id = #{id}
+    </update>
+    
+     <update id="updateKeyword">
+    update tb_goods set  keyword = #{keyword}
+    where id = #{goodsId}
+    </update>
+    
+    <update id="updatePJGoods">
+    update tb_goods_detail set  num = num -1
+    where id = #{id}
+    </update>
+    
+    
+    <update id="updateStatusByUserId" parameterType="com.pdatao.api.entity.Goods">
+		update tb_goods set
+		<if test="status!=null">
+			status = #{status}
+		</if>
+		where create_user = #{seller}
+	</update>
+	<update id="updatePrice" parameterType="com.pdatao.api.entity.Goods">
+		update tb_goods set
+		<if test="price!=null">
+			goods_price = #{price}
+		</if>
+		where id = #{id}
+	</update>
+	
+	<select id="getGoodsdetail" resultType="com.pdatao.api.entity.GoodsDetail">
+		select id ,
+			   goods_id as goodsId,
+			   start_time as startTime,
+			   num
+	    from tb_goods_detail
+	    where goods_id = #{goodsId} and 
+	    DATE_FORMAT(start_time,'%Y-%m-%d %H') = DATE_FORMAT(#{startTime},'%Y-%m-%d %H') 
+	</select>
+	
+	<update id="jiaGoodsDetailNum">
+		update tb_goods_detail set num = num + #{num} where id = #{id}
+	
+	</update>
+	
+	<update id="updateNotFond">
+		update tb_goods set notFond = notFond +1 where id =#{goodsId}
+	</update>
+</mapper>

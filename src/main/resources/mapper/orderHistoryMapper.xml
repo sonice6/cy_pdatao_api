@@ -1,0 +1,53 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.OrderHistoryMapper">
+
+	<insert id="saveOrderHistory" parameterType="com.pdatao.api.entity.OrderHistory">
+	insert into tb_order_history(buyer,seller,shop_id,goods_id,gift_id,order_no,num,type,create_date,update_date)
+	values(#{buyer},#{seller},#{shopId},#{goodsId},#{giftId},#{orderNo},#{num},#{type},SYSDATE(),SYSDATE())
+	
+	</insert>
+    
+    <select id="getGiftList" resultType="com.pdatao.api.entity.Gift">
+       select id ,
+              gift_type as giftType,
+              gift_name as giftName,
+              gift_code as giftCode,
+              gift_image as giftImage,
+              status ,
+              gift_stock as giftStock,
+              create_user as createUser,
+              goods_id as goodsId,
+              shopId,
+  			  shop_name as shopName,
+              gift_available_nul as giftAvailableNul,
+              create_date as createDate,
+              update_date as updateDate
+        from tb_gift
+        limit #{pageSize},#{pageCount}
+    </select>
+    
+    
+    <select id="getGift" resultType="com.pdatao.api.entity.Gift">
+       select id ,
+              gift_type as giftType,
+              gift_name as giftName,
+              gift_code as giftCode,
+              gift_image as giftImage,
+              status ,
+              gift_stock as giftStock,
+              shopId,
+  			  shop_name as shopName,
+              create_user as createUser,
+              goods_id as goodsId,
+              gift_available_nul as giftAvailableNul,
+              create_date as createDate,
+              update_date as updateDate
+        from tb_gift
+        where id =#{id}
+    </select>
+
+</mapper>

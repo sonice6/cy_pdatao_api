@@ -1,0 +1,43 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.UserCenterMapper">
+    
+   <insert id="addUser" parameterType="com.pdatao.api.entity.UserCenter">
+		insert into
+		tb_user_center(user_name,nick_name,password,email,phoneno,roleid,status,sex,dr,create_time,coins_count)
+		values(#{userName},#{nickName},#{password},#{email},#{phoneno},#{roleId},#{status},#{sex},0,SYSDATE(),0)
+	</insert>
+	
+	
+	<select id="getUserBYId" resultType="com.pdatao.api.entity.UserCenter">
+		select
+			  id,
+			  user_name,
+			  nick_name,
+			  coins_count as coinsCount
+		from tb_user_center
+		where status = 0
+		and id =#{id}
+
+	</select>
+	
+	<select id="selectByUsername" resultType="com.pdatao.api.entity.UserCenter">
+		select
+			  id,
+			  user_name,
+			  nick_name,
+			  coins_count as coinsCount
+		from tb_user_center
+		where status = 0
+		and user_name =#{userName}
+	</select>
+	
+	
+	<update id="updateJinb">
+		update tb_user_center set  coins_count = coins_count - #{coinsCount}
+		where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.TbGoodsDbMapper">
+    
+    <insert id="saveGoodsDb" parameterType="com.pdatao.api.entity.TbGoodsDb">
+      insert into tb_goods_db(goods_id,ww_account,tb_goods_id,keywords,return_json,create_date)
+		values(#{goodsId},#{wwAccount},#{tbGoodsId},#{keywords},#{returnJson},SYSDATE())
+    </insert>
+
+</mapper>

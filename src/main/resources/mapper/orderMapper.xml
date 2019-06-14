@@ -1,0 +1,295 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.OrderMapper">
+    
+    <select id="getOrderList" resultType="com.pdatao.api.entity.Order">
+       select tb_order.id,tb_order.order_no AS orderNo,tb_order.status,tb_order.buyer,tb_order.seller,
+       case tb_order.status when  0 then '通过申请' when 1 then '付款待验证' when 2 then '已验证待返款'
+when 3 then '验证拒绝' when 4 then '任务完成' when 5 then '强行终止任务' when 10 then '订单异常' end AS statusText,
+			tb_order.shop_id AS shopId,tb_shop.shop_name AS shopName,tb_order.taobao_order AS taobaoOrder,
+		    tb_order.goods_id AS goodsId,tb_order.gift_id AS giftId,tb_order.address_id AS addressId,
+				tb_order.over_date AS overDate,tb_order.create_user AS createUser,tb_order.create_date AS createDate,
+				tb_order.taobao_order_status AS taobaoOrderStatus,tb_order.taobao_address AS taobaoAddress,
+				tb_order.taobao_amount AS taobaoAmount,tb_order.byer_amount AS byerAmount,
+		    tb_order.i_refunds AS iRefunds,tb_order.status_details AS statusDetails,
+				tb_shop.shop_user AS sellerCode,tb_user_center.user_name AS buyerCode,
+				tb_goods.goods_eval as goodsEval,(case when tb_eval.id is null  then 0 else 1 end)as isEval
+				,tb_goods.refunds_type as refundsType 
+        from tb_order
+left join tb_shop on tb_order.shop_id = tb_shop.id
+left join tb_user_center on tb_order.buyer = tb_user_center.id
+left join tb_goods on tb_order.goods_id = tb_goods.id
+left  join tb_eval on tb_order.id= tb_eval.order_id
+where 1=1 and tb_order.create_user = #{userId}
+        <if test="status==0">
+        and tb_order.status in (0,1,2,3,7,10)
+		</if>
+		<if test="status==1">
+        and tb_order.status in (4,5)
+		</if>
+        order by tb_order.create_date
+    </select>
+    
+    <select id="getOrder" resultType="com.pdatao.api.entity.Order">
+       select tb_order.id,tb_order.order_no AS orderNo,tb_order.status,tb_order.buyer,tb_order.seller,
+       case tb_order.status when  0 then '通过申请' when 1 then '付款待验证' when 2 then '已验证待返款'
+when 3 then '验证拒绝' when 4 then '任务完成' when 5 then '强行终止任务' when 10 then '订单异常' end AS statusText,
+			tb_order.shop_id AS shopId,tb_shop.shop_name AS shopName,tb_order.taobao_order AS taobaoOrder,
+		    tb_order.goods_id AS goodsId,tb_order.gift_id AS giftId,tb_order.address_id AS addressId,
+				tb_order.over_date AS overDate,tb_order.create_user AS createUser,tb_order.create_date AS createDate,
+				tb_order.taobao_order_status AS taobaoOrderStatus,tb_order.taobao_address AS taobaoAddress,
+				tb_order.taobao_amount AS taobaoAmount,tb_order.byer_amount AS byerAmount,
+		    tb_order.i_refunds AS iRefunds,tb_order.status_details AS statusDetails,
+				tb_shop.shop_user AS sellerCode,tb_user_center.user_name AS buyerCode,
+				tb_goods.goods_eval as goodsEval,(case when tb_eval.id is null  then 0 else 1 end)as isEval
+				,tb_goods.refunds_type as refundsType 
+        from tb_order
+left join tb_shop on tb_order.shop_id = tb_shop.id
+left join tb_user_center on tb_order.buyer = tb_user_center.id
+left join tb_goods on tb_order.goods_id = tb_goods.id
+left  join tb_eval on tb_order.id= tb_eval.order_id
+where 1=1 
+	<if test="Id!=null and OrderCode==null"> and tb_order.id = #{Id}</if>
+	<if test = "OrderCode!=null and Id == null"> and tb_order.taobao_order = #{OrderCode} </if>
+	<if test = "OrderCode!=null and Id != null"> and tb_order.buyer != #{Id} and tb_order.taobao_order like #{OrderCode} </if>
+    </select>
+    
+     <select id="getOrderByTaobao" resultType="com.pdatao.api.entity.Order">
+       select tb_order.id,tb_order.order_no AS orderNo,tb_order.status,tb_order.buyer,tb_order.seller,
+       case tb_order.status when  0 then '通过申请' when 1 then '付款待验证' when 2 then '已验证待返款'
+when 3 then '验证拒绝' when 4 then '任务完成' when 5 then '强行终止任务' when 10 then '订单异常' end AS statusText,
+			tb_order.shop_id AS shopId,tb_shop.shop_name AS shopName,tb_order.taobao_order AS taobaoOrder,
+		    tb_order.goods_id AS goodsId,tb_order.gift_id AS giftId,tb_order.address_id AS addressId,
+				tb_order.over_date AS overDate,tb_order.create_user AS createUser,tb_order.create_date AS createDate,
+				tb_order.taobao_order_status AS taobaoOrderStatus,tb_order.taobao_address AS taobaoAddress,
+				tb_order.taobao_amount AS taobaoAmount,tb_order.byer_amount AS byerAmount,
+		    tb_order.i_refunds AS iRefunds,tb_order.status_details AS statusDetails,
+				tb_shop.shop_user AS sellerCode,tb_user_center.user_name AS buyerCode,tb_goods.goods_eval as goodsEval
+				,tb_goods.refunds_type as refundsType
+        from tb_order
+left join tb_shop on tb_order.shop_id = tb_shop.id
+left join tb_user_center on tb_order.buyer = tb_user_center.id
+left join tb_goods on tb_order.goods_id = tb_goods.id
+where 1=1 and tb_order.taobao_order = #{taobao_order}
+ </select>
+    
+    
+    <select id="getOrderCode" resultType="com.pdatao.api.entity.Order">
+       select tb_order.id,tb_order.order_no AS orderNo,tb_order.status,tb_order.buyer,tb_order.seller,
+       case tb_order.status when  0 then '通过申请' when 1 then '付款待验证' when 2 then '已验证待返款'
+when 3 then '验证拒绝' when 4 then '任务完成' when 5 then '强行终止任务' when 10 then '订单异常' end AS statusText,
+			tb_order.shop_id AS shopId,tb_shop.shop_name AS shopName,tb_order.taobao_order AS taobaoOrder,
+		    tb_order.goods_id AS goodsId,tb_order.gift_id AS giftId,tb_order.address_id AS addressId,
+				tb_order.over_date AS overDate,tb_order.create_user AS createUser,tb_order.create_date AS createDate,
+				tb_order.taobao_order_status AS taobaoOrderStatus,tb_order.taobao_address AS taobaoAddress,
+				tb_order.taobao_amount AS taobaoAmount,tb_order.byer_amount AS byerAmount,
+		    tb_order.i_refunds AS iRefunds,tb_order.status_details AS statusDetails,
+				tb_shop.shop_user AS sellerCode,tb_user_center.user_name AS buyerCode
+        from tb_order
+left join tb_shop on tb_order.shop_id = tb_shop.id
+left join tb_user_center on tb_order.buyer = tb_user_center.id
+where 1=1 and tb_order.id != #{id} and taobao_order = #{orderCode}
+ </select>
+    
+    
+     <select id="getShopUserId" resultType="java.lang.Long">
+     select  shop_user_id from tb_shop where id = #{id}
+    </select>
+    
+ 
+     <select id="getGoodsList" resultType="com.pdatao.api.entity.Goods">
+       select id,
+		       goods_name as goodsName,
+		       goods_title as goodsTitle,
+		       goods_type as goodsType,
+		       goods_image as goodsImage,
+		       gift_type as giftType,
+		       gift as gift,
+		       trial_type as trialType, 
+		       shop as shop,
+		       goods_price as goodsPrice,
+		       goods_num as goodsNum,
+		       demand_num as demandNum,
+		       release_type as releaseType,
+		       start_time as startTime,
+		       end_time as endTime,
+		       end_type as endType,
+		       taobao_link as taobaoLink,
+		       taobao_details as taobaoDetails,
+		       create_user as createUser,
+		       create_date as createDate,
+		       update_date as updateDate,
+		       status as status,
+		       sku as sku
+		 from tb_goods
+		 where id = #{id}
+    </select>
+    
+    <select id="getByuerOrder" resultType="com.pdatao.api.entity.Order">
+    	select  id,
+    	        order_no as orderNo,
+    	        buyer ,
+    	        seller,
+    	        create_date as createDate
+    	from tb_order
+    	where buyer = #{userId} and status in (0,1) and TO_DAYS(create_date) = TO_DAYS(now())        
+    </select>
+    <select id="getOrderByShop" resultType="com.pdatao.api.entity.Order">
+    	select  id,
+    	        order_no as orderNo,
+    	        buyer ,
+    	        shop_id as shopId,
+    	        seller,
+    	        create_date as createDate
+    	from tb_order
+    	where buyer = #{userId} 
+    	<![CDATA[
+    	and DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(create_date)   
+    	]]> 
+    	and status in(2,4)
+    </select>
+    
+    <select id="getOrderTask" resultType="com.pdatao.api.entity.Order">
+       select   a.id,
+    	        a.order_no as orderNo,
+    	        a.buyer ,
+    	        a.shop_id as shopId,
+    	        a.seller,
+                b.user_name as sellerCode,
+    	        a.seller,
+    	        a.goods_id as  goodsId,
+    	        a.taobao_order as taobaoOrder,
+    	        a.create_date as createDate
+    	from tb_order a
+    	left join tb_user_center b on a.seller = b.id
+		where   a.taobao_order not in('')
+		and a.status = 1 and a.check_order = 1
+    </select>
+    
+    <select id="getOrderEval" resultType="com.pdatao.api.entity.Order">
+       select   a.id,
+    	        a.order_no as orderNo,
+    	        a.buyer ,
+    	        a.shop_id as shopId,
+    	        a.seller,
+                b.user_name as sellerCode,
+    	        a.seller,
+    	        a.goods_id as  goodsId,
+    	        a.taobao_order as taobaoOrder,
+    	        a.create_date as createDate,
+    	        a.update_date as updateDate,
+    	        c.id as evalId
+    	from tb_order a
+    	left join tb_user_center b on a.seller = b.id
+    	left join tb_eval c on a.id = c.order_id
+		where   a.`status`=7
+    </select>
+    
+    
+    <select id="getbyuerStatus" resultType="java.lang.Integer">
+       select u.status from tb_member u where u.id = #{byuer};
+    </select>
+    <!-- 增加订单列表 -->
+	<insert id="saveOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.pdatao.api.entity.Order">
+		insert into tb_order(order_no,status,buyer,seller,shop_id,taobao_order,goods_id,gift_id,address_id,
+		create_user,create_date,taobao_order_status,taobao_address,taobao_amount,byer_amount,i_refunds,status_details,keywords)
+        values(#{orderNo},#{status},#{buyer},#{seller},#{shopId},#{taobaoOrder},#{goodsId},#{giftId},#{addressId},
+        #{createUser},now(),#{taobaoOrderStatus},#{taobaoAddress},#{taobaoAmount},#{byerAmount},#{iRefunds},#{statusDetails},#{keywords})
+	</insert>
+	
+	
+	<update id="updateOrder" parameterType="com.pdatao.api.entity.Order">
+		  UPDATE tb_order
+        SET 
+        <if test="taobaoOrder!=null">
+        taobao_order=#{taobaoOrder},byer_amount=#{byerAmount},status=1
+		</if>
+		<if test="taobaoAmount">
+		taobao_amount=#{taobaoAmount}
+		</if>
+        WHERE id=#{id}
+	</update>
+	
+	<update id="updateOrderCode" parameterType="com.pdatao.api.entity.Order">
+		  UPDATE tb_order
+        SET 
+        taobao_order=#{taobaoOrder},byer_amount=#{byerAmount},status=1
+        WHERE id=#{id}
+	</update>
+	
+	
+	<update id="updateTaskOrderStatus">
+	
+		update tb_order set check_order=2 
+		where id = #{orderId}
+	
+	</update>
+	
+	<update id="updateOrderStatus">
+		update tb_order set update_date =SYSDATE() , status=#{status}
+		where id = #{orderId}
+	</update>
+	
+	<update id="updateOrderAddress">
+		update tb_order set taobao_address = #{address}
+		where id = #{orderId}
+	</update>
+	
+	<update id="updateOrderStatusDetails">
+		update tb_order set status=3 ,update_date = SYSDATE(),status_details=#{statusDetail}
+		where id = #{orderId}
+	</update>
+	
+	<!-- 修改订单库存 -->
+	<update id="updateOrderHistory" parameterType="java.lang.String">
+	<if test="status==0">
+	UPDATE tb_order_history SET num=(num - 1) where order_no  = (SELECT tb_order.order_no FROM tb_order where id = #{orderId});
+	</if>
+	<if test="status==1">
+	UPDATE tb_order_history SET num=(num + 1) where order_no  = (SELECT tb_order.order_no FROM tb_order where id = #{orderId});
+	</if>
+	</update>
+	<update id="updateGoodsStock" parameterType="java.lang.String">
+	<if test="status==0">
+	UPDATE tb_goods SET goods_num=(goods_num + 1) where id = (SELECT tb_order.goods_id FROM tb_order where id = #{orderId});
+	</if>
+	<if test="status==1">
+	UPDATE tb_goods SET goods_num=(goods_num - 1) where id = (SELECT tb_order.goods_id FROM tb_order where id = #{orderId});
+	</if>
+	</update>
+	<update id="updateGift" parameterType="java.lang.String">
+	<if test="status==0">
+	UPDATE tb_gift SET gift_stock=(gift_stock + 1) where id = (SELECT tb_order.gift_id FROM tb_order where id = #{orderId});
+	</if>
+	<if test="status==1">
+	UPDATE tb_gift SET gift_stock=(gift_stock - 1) where id = (SELECT tb_order.gift_id FROM tb_order where id = #{orderId});
+	</if>
+	</update>
+	
+	<select id="getOrderById" resultType="com.pdatao.api.entity.Order">
+		select   a.id,
+    	        a.order_no as orderNo,
+    	        a.buyer ,
+    	        a.shop_id as shopId,
+    	        a.seller,
+                b.user_name as sellerCode,
+    	        a.seller,
+    	        a.status,
+    	        a.goods_id as  goodsId,
+    	        a.taobao_order as taobaoOrder,
+    	        a.create_date as createDate
+    	from tb_order a
+    	left join tb_user_center b on a.seller = b.id
+		where   a.id=#{id}
+	</select>
+	
+	
+	<update id="updateOrderTaobaoAmount">
+		update tb_order set update_date = SYSDATE() , taobao_amount =#{taobaoAmount}
+		where id =#{id}
+	</update>
+
+</mapper>

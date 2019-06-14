@@ -1,0 +1,76 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.TbUserMapper">
+ <resultMap id="tbUserMap" type="com.pdatao.api.entity.TbUser">
+        <id column="id" property="id"/>
+        <result column="android_id" property="androidId"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="umid_token" property="umidToken"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="device_token_key" property="deviceTokenKey"/>
+        <result column="head_pic_link" property="headPicLink"/>
+        <result column="show_login_id" property="showLoginId"/>
+        <result column="taobao_nick" property="taobaoNick"/>
+        <result column="auto_login_token" property="autoLoginToken"/>
+        <result column="json1" property="json1"/>
+        <result column="json2" property="json2"/>
+        <result column="json3" property="json3"/>
+        <result column="status" property="status"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="alipay_real_name_auth" property="alipayRealNameAuth"/>
+        <result column="wap_cookie" property="wapCookie"/>
+        <result column="tao_score" property="taoScore"/>
+    </resultMap>
+    <select id="selectEmptyUserCount" resultType="java.lang.Integer">
+        select count(0) from tb_users where username is null
+    </select>
+    
+    <update id="updateUserCity">
+    	update tb_users set province =#{province},  city=#{city}
+    	where id = #{id}
+    </update>
+    
+    <select id="getUserByStatus" resultMap="tbUserMap">
+    	select *
+    	from tb_users
+    	where sid not in('') and status = #{status}
+    </select>
+    
+    
+    <select id="getNumStatus" resultMap="tbUserMap">
+    	select *
+    	from tb_users
+    	where sid not in('')
+    </select>
+    
+    <update id="updateStatus">
+    	update tb_users set status=#{status}
+    	where id = #{id}
+    </update>
+    
+    <update id="updateCheckSession">
+    	update tb_users set sid=#{sid},taobao_nick=#{taobaoNick},json2=#{json2},status=0
+    	where id =#{id}
+    </update>
+
+    <select id="selectByUsername" resultMap="tbUserMap">
+        SELECT * FROM tb_users WHERE username = #{username} limit 1
+    </select>
+
+    <select id="selectRandomEmptyUser" resultMap="tbUserMap">
+        select * from tb_users where username is null  order by RAND() limit 1
+    </select>
+
+    <select id="selectEmptyUser" resultMap="tbUserMap">
+        select * from tb_users where username is null limit 1
+    </select>
+
+    <select id="selectRandomValidUser" resultMap="tbUserMap">
+        select * from tb_users where json1 is not null  order by RAND() limit 1
+    </select>
+</mapper>

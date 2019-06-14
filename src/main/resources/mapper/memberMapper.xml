@@ -1,0 +1,494 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.MemberMapper">
+
+
+	<select id="getMemberByUnionid" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel
+		from tb_member
+		where wx_unionid =#{wxUnionid}
+	</select>
+	
+	
+	<select id="getMemberByPhone" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel
+		from tb_member
+		where phone_no =#{phoneNo}
+	</select>
+	
+	<select id="getIpCount" resultType="java.lang.Integer">
+		select count(1) from tb_member where ip = #{ip} and  to_days(create_date) = to_days(now());
+	</select>
+	<select id="getMember" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,	
+		bank_account as bankAccount,
+		bank_type as bankType,
+		bank_name as bankName,
+		remark,
+		ifnull(cash.cashbackAmount,0)cashbackAmount
+		from tb_member
+		left join (select cashback_buyer,sum(cash.cashbackAmount)cashbackAmount from (select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=0
+		group by cashback_buyer
+		union all
+		select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=1 
+		group by cashback_buyer)cash
+		group by cashback_buyer)cash on tb_member.id = cash.cashback_buyer
+		where (ww_account =#{userName} or phone_no  = #{userName}) and password= #{password}
+	</select>
+	
+	<select id="getMemberBynickName" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		remark,
+		ifnull(cash.cashbackAmount,0)cashbackAmount
+		from tb_member
+		left join (select cashback_buyer,sum(cash.cashbackAmount)cashbackAmount from (select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=0
+		group by cashback_buyer
+		union all
+		select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=1 
+		group by cashback_buyer)cash
+		group by cashback_buyer)cash on tb_member.id = cash.cashback_buyer
+		where wx_nickname =#{nickName} or wx_nickname =#{nickNames}
+	</select>
+	
+	<select id="getMemberByuserName" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		remark
+		from tb_member
+		where ww_account =#{userName} or phone_no = #{userName}
+	</select>
+	
+	<select id="getMemberById" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		tb_vip_level as tbVipLevel,	
+		bank_account as bankAccount,
+		bank_type as bankType,
+		bank_name as bankName,
+		remark,
+		ifnull(cash.cashbackAmount,0)cashbackAmount
+		from tb_member
+		left join (select cashback_buyer,sum(cash.cashbackAmount)cashbackAmount from (select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=0
+		group by cashback_buyer
+		union all
+		select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=1 
+		group by cashback_buyer)cash
+		group by cashback_buyer)cash on tb_member.id = cash.cashback_buyer
+		where id =#{id}
+	</select>
+	
+	<select id="isExistsWxAccount" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		remark
+		from tb_member
+		where wx_account =#{wxAccount}
+	</select>
+	
+	
+	<select id="isExistsWwAccount" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		remark
+		from tb_member
+		where ww_account =#{wwAccount}
+	</select>
+	
+	
+	<select id="getMemberByOpenId" resultType="com.pdatao.api.entity.Member">
+		select id ,
+		username as userName,
+		password,
+		ww_account as wwAccount,
+		wx_account as wxAccount,
+		phone_no as phoneNo,
+		email,
+		status,
+		true_num as trueNum,
+		create_date as createDate,
+		update_date as updateDate,
+		total_num as totalNum,
+		good_num as goodNum,
+		vip_info as vipInfo,
+		tb_created as tbCreated,
+		warning_num as warningNum,
+		wxid ,
+		wx_nickname as wxNickname,
+		wx_image as wxImage,
+		order_bs as orderBs,
+		ww_bindnum as WwBindnum,
+		wx_unionid as wxUnionid,
+		tb_vip as tbVip,
+		tb_vip_level as tbVipLevel,
+		bank_account as bankAccount,
+		bank_type as bankType,
+		bank_name as bankName,
+		remark,
+		ifnull(cash.cashbackAmount,0)cashbackAmount
+		from tb_member
+		left join (select cashback_buyer,sum(cash.cashbackAmount)cashbackAmount from (select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=0
+		group by cashback_buyer
+		union all
+		select cashback_buyer,sum(cashback_amount) cashbackAmount from tb_cashback
+		where cashback_type=1 and cashback_state=1
+		group by cashback_buyer)cash
+		group by cashback_buyer)cash on tb_member.id = cash.cashback_buyer
+		where wxid =#{openid}
+	</select>
+	
+
+	<insert id="register" parameterType="com.pdatao.api.entity.Member">
+		insert into
+		tb_member(username,password,ww_account,wx_account,phone_no,email,status,create_date,update_date,total_num,good_num,vip_info,tb_created,warning_num,wxid,wx_unionid,tb_vip,tb_vip_level,tb_sex,tb_promoted )
+		values(#{userName},#{password},#{wwAccount},#{wxAccount},#{phoneNo},#{email},#{status},SYSDATE(),SYSDATE(),#{totalNum},#{goodNum},#{vipInfo},#{tbCreated},#{warningNum},#{wxid},#{wxUnionid},#{tbVip},#{tbVipLevel},#{tbSex},#{tbPromoted})
+	</insert>
+	
+	<update id="realName" parameterType="com.pdatao.api.entity.Member">
+	    update tb_member set tb_name = #{tbName},tb_card = #{tbCard} where id = #{id}
+	</update>
+	
+	<update id="BindBankCard" parameterType="com.pdatao.api.entity.Member">
+	    update tb_member set
+	    <if test="wxAccount!=null">
+	    wx_account = #{wxAccount}
+	    </if>
+	    <if test="wxAccount==null">
+	     bank_account = #{bankAccount},
+	    bank_type = #{bankType},bank_name = #{bankName}
+	    </if>
+	     where id = #{id}
+	</update>
+	
+	<update id="updateMemberVip" parameterType="com.pdatao.api.entity.Member">
+	    update tb_member set tb_vip = #{tbVip},tb_vip_level = #{tbVipLevel} where id = #{id}
+	</update>
+	
+	
+	<insert id="WeRegister" parameterType="com.pdatao.api.entity.Member">
+		insert into
+		tb_member(username,password,ww_account,wx_account,phone_no,email,status,create_date,update_date,total_num,good_num,vip_info,tb_created,warning_num,wxid,wx_nickname,wx_image,ip)
+		values(#{userName},#{password},#{wwAccount},#{wxAccount},#{phoneNo},#{email},#{status},SYSDATE(),SYSDATE(),#{totalNum},#{goodNum},#{vipInfo},#{tbCreated},#{warningNum},#{wxid},#{wxNickname},#{wxImage},#{ip})
+	</insert>
+	
+	
+	<update id="updatePassword">
+		update tb_member set password =#{password} where id = #{id}
+	</update>
+	
+	<update id="updateMemberImage">
+	 update tb_member set taobao_image= CONCAT(IFNULL(taobao_image,''),#{path}),status=2
+	 where id = #{id}
+	</update>
+	
+	<update id="updateMemberOrderBs">
+		update tb_member set order_bs =#{orderBs}
+		where id = #{id}
+	</update>
+	
+	<update id="updateMemberWwAccount">
+		update tb_member set status = #{status}
+		<if test="wwAccount!=null">
+		,ww_account=#{wwAccount}
+		</if>
+		<if test="wxAccount!=null">
+		,wx_account=#{wxAccount}
+		</if>
+		<if test="tbCreated">
+		,tb_created=#{tbCreated}
+		</if>
+		<if test="goodNum">
+		,good_num=#{goodNum}
+		</if>
+		<if test="totalNum!=null">
+		,total_num=#{totalNum}
+		</if>
+		<if test="vipInfo!=null">
+		,vip_info=#{vipInfo}
+		</if>
+		<if test="warningNum!=null">
+		,warning_num=#{warningNum}
+		</if>
+		<if test="wwBindnum!=null">
+		,ww_bindnum=#{wwBindnum}
+		</if>
+		<if test="tbSex!=null">
+		,tb_sex=#{tbSex}
+		</if>
+		<if test="tbPromoted!=null">
+		,tb_promoted=#{tbPromoted}
+		</if>
+		<if test="tbVip!=null">
+		,tb_vip=#{tbVip}
+		</if>
+		<if test="tbVipLevel!=null">
+		,tb_vip_level=#{tbVipLevel}
+		</if>
+		where id = #{id}
+	</update>
+	
+	<update id="updateMemberTrueNum">
+		update tb_member set true_num = true_num - 1
+		where id = #{userId}
+	</update>
+	
+	<update id="updateMemberUnionid">
+		update tb_member set wx_unionid = #{wxUnionid}
+		where id = #{userId}
+	</update>
+	
+	
+	<update id="updatePhoneNo">
+		update tb_member set phone_no = #{phoneNo}
+		where id = #{id}
+	</update>
+	
+	<update id="updateAccount" parameterType="com.pdatao.api.entity.Member">
+		update tb_member set wxid=#{wxid},wx_nickname=#{wxNickname},wx_image=#{wxImage},wx_unionid=#{wxUnionid}
+		where id = #{id}
+	</update>
+	
+	<delete id ="deleteMember">
+	delete from tb_member where id =#{id}
+	</delete>
+	
+	
+	<select id="isExistsWw" resultType="com.pdatao.api.entity.CodeData">
+		select id,wechat_code as wechatCode,
+					taobao_code as taobaoCode,
+					status,
+					remark,
+					tb_created as tbCreated,
+					good_num as goodNum,
+					total_num as totalNum,
+					vip_info as vipInfo,
+					warning_num as warningNum,
+					sex as sex,
+					promoted_type as promotedType 
+					from 
+					tb_code_data
+		where taobao_code = #{wwAccount}
+	</select>
+	
+	<update id="resetMemberTrueNum">
+		update tb_member set true_num = 3
+	</update>
+	
+	
+	<select id="getCodeData" resultType="com.pdatao.api.entity.CodeData">
+		select id,wechat_code as wechatCode,
+					taobao_code as taobaoCode,
+					status,
+					remark,
+					tb_created as tbCreated,
+					good_num as goodNum,
+					total_num as totalNum,
+					vip_info as vipInfo,
+					warning_num as warningNum,
+					sex as sex,
+					promoted_type as promotedType 
+					from 
+					tb_code_data
+			where tb_created is  null
+	</select>
+	
+	<update id="updateCodeData" parameterType="com.pdatao.api.entity.CodeData">
+		update tb_code_data set tb_created = #{tbCreated},
+								good_num = #{goodNum},
+								total_num = #{totalNum},
+								vip_info = #{vipInfo},
+								warning_num = #{warningNum} 
+		where id = #{id}
+	</update>
+	
+	
+</mapper>

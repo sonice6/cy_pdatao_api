@@ -1,0 +1,16 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.EvalMapper">
+    
+  
+    <!-- 增加订单列表 -->
+	<insert id="saveEval" useGeneratedKeys="true" keyProperty="id" parameterType="com.pdatao.api.entity.Eval">
+		insert into tb_eval(order_id,buyer,upload_img,message)
+        values(#{orderId},#{buyer},#{uploadImg},#{message})
+	</insert>
+	
+
+</mapper>

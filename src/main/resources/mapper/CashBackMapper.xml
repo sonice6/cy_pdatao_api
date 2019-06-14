@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.CashBackMapper">
+
+
+
+    <select id="getCashList" resultType="com.pdatao.api.entity.CashBack">
+    	select id,
+    	abs(cashback_amount) cashbackAmount,
+		cashback_time as cashbackTime,cashback_type as cashbackType,cashback_state as cashbackState from tb_cashback
+		where cashback_buyer = #{id}
+	 order by cashback_time desc limit #{pageSize},#{pageCount}
+    </select>
+    
+     <select id="getCashCount" resultType="java.lang.Integer">
+    	select count(1) as total from tb_cashback where cashback_buyer = #{id}
+    </select>
+    
+    <insert id="CashBackAdd" parameterType="com.pdatao.api.entity.CashBack">
+      insert into
+		tb_cashback(cashback_code,cashback_order,cashback_amount,cashback_buyer,cashback_time,cashback_type,cashback_state)
+		values(#{cashbackCode},#{cashbackOrder},#{cashbackAmount},#{cashbackBuyer},SYSDATE(),#{cashbackType},#{cashbackState})
+    </insert>
+   
+
+</mapper>

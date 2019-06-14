@@ -1,0 +1,21 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.OperationLogMapper">
+        <!-- 删除业务日志列表信息 -->
+	<delete id="deleteShop" parameterType="java.lang.String" >
+	    DELETE FROM tb_shop
+	    WHERE id IN
+	    <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+	         #{id}
+	    </foreach>
+	</delete>
+	
+	<!-- 增加业务日志列表信息 -->
+	<insert id="saveOperationLog" parameterType="com.pdatao.api.entity.OperationLog">
+		 INSERT INTO tb_operation_log (modular,type,create_user,create_date,modular_id)
+		 VALUES (#{modular},#{type},#{createUser},#{createDate},#{modularId})
+	</insert>
+</mapper>

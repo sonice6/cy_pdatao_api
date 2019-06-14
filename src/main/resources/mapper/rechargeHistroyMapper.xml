@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pdatao.api.dao.RechargeHistoryMapper">
+
+
+
+	<insert id="saveRecharge" parameterType="com.pdatao.api.entity.RechargeHistory" useGeneratedKeys="true" keyProperty="id">
+	 insert tb_recharge_history(recharge_id,recharge_amount,goods_id,gift_id,type,create_user,create_date,update_date)
+	values(#{rechargeId},#{rechargeAmount},#{goodsId},#{giftId},#{type},#{createUser},SYSDATE(),SYSDATE())
+	</insert>
+	
+	<select id="getRechargeListByUserId" resultType="com.pdatao.api.entity.RechargeHistory">
+		select id ,
+      	       recharge_id as rechargeId,
+      		   recharge_amount as rechargeAmount,
+               goods_id as goodsId,
+               gift_id as giftId,
+               type,
+               create_user as createUser,
+               create_date as createDate,
+               update_date as updateDate
+        from tb_recharge_history
+        where 
+        type=3 and
+        recharge_id =#{userId}
+	</select>
+	
+	<select id="getRechargetHistoryByGoodsId" resultType="com.pdatao.api.entity.RechargeHistory">
+		select id ,
+      	       recharge_id as rechargeId,
+      		   recharge_amount as rechargeAmount,
+               goods_id as goodsId,
+               gift_id as giftId,
+               type,
+               create_user as createUser,
+               create_date as createDate,
+               update_date as updateDate
+        from tb_recharge_history
+        where 
+        type=3 and
+        goods_id =#{goodsId}
+	</select>
+	
+	<update id="deleteRecharge">
+		update tb_recharge_history set status=3
+		where 1=2
+		<if test="ids!=null">
+		or id in
+			<foreach item="item" collection="ids" open="(" separator="," close=")">
+				${item}
+			</foreach>
+		</if>
+	</update>
+	            
+	<update id="updateRecharge" parameterType="com.pdatao.api.entity.RechargeHistory">
+		update tb_recharge_history set
+		<if test="status!=null">
+			status = #{status}
+		</if>
+
+		where id = #{id}
+	</update>
+	
+	<update id="updateDjRecharge" >
+		update tb_recharge_history set recharge_amount = recharge_amount - #{rechargeAmount}
+		where goods_id = #{goodsId} and type=3
+	</update>
+	
+		<select id="getRechaByseller" resultType="com.pdatao.api.entity.RechargeHistory">
+		select id ,
+      	       recharge_id as rechargeId,
+      		   recharge_amount as rechargeAmount,
+               goods_id as goodsId,
+               gift_id as giftId,
+               type,
+               create_user as createUser,
+               create_date as createDate,
+               update_date as updateDate
+        from tb_recharge_history
+        where 
+        type=3 and
+        recharge_id =#{sellerId}
+	</select>
+	
+	
+	<select id="getRechargetHistoryBysellerId" resultType="java.lang.Double">
+		select sum(recharge_amount)
+        from tb_recharge_history
+        where 
+        type=3 and
+        recharge_id =#{sellerId}
+	</select>
+	
+	
+	<update id="updateDjCleanByGoodsId">
+		update tb_recharge_history set  recharge_amount = 0
+		where goods_id = #{goodsId} and type=3
+	</update>
+	<update id="updateDjCleanByseller">
+		update tb_recharge_history set  recharge_amount = 0
+		where recharge_id = #{sellerId} and type=3
+	</update>
+</mapper> 
